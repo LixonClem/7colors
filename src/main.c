@@ -50,7 +50,7 @@ bool play(Player_id player) //false if wrong input
         else if ((buffer[0] >= 'A' && buffer[0] <= 'G') || (buffer[0] >= 'a' && buffer[0] <= 'g'))
         {
             printf("You have chose: '%c'\n", buffer[0]);
-            modify(player, ('a' <= buffer[0] && buffer[0] <= 'g') ? buffer[0] - 'a' + c1 : buffer[0]-'A' + c1);
+            modify(player, ('a' <= buffer[0] && buffer[0] <= 'g') ? buffer[0] - 'a' + c1 : buffer[0] - 'A' + c1);
         }
         else
         {
@@ -69,20 +69,25 @@ int main(int argc, char *argv[])
 {
     srand(time(NULL));
 
-    if (argc == PLAYER_NUMBER+1)
+    if (argc == PLAYER_NUMBER + 1)
     {
         for (int i = 0; i < PLAYER_NUMBER; i++)
         {
-            Players_type[i]=(int)*argv[i+1];
+            Players_type[i] = (int)(*argv[i+1]-'0');
         }
     }
     else
     {
-        Players_type[J1-1]=HUMAN;
-        Players_type[J2-1]=RANDOM;
+        Players_type[J1 - 1] = HUMAN;
+        Players_type[J2 - 1] = GLOUTON;
     }
 
-    fill_board();
+    printf("J1 set to %i\n"
+           "J2 set to %i\n",
+           Players_type[J1 - 1],
+           Players_type[J2 - 1] );
+
+        fill_board();
     printf("\n\nWelcome to the 7 wonders of the world of the 7 colors\n"
            "*****************************************************\n\n"
            "Current board state:\n");
@@ -103,9 +108,9 @@ int main(int argc, char *argv[])
                 printf("%s win with %lf pourcent\n"
                        "%s only have %lf pourcent\n",
                        j1Turn ? "J1" : "J2",
-                       (double)numberOfCells(j1Turn ? J1 : J2) / (BOARD_SIZE * BOARD_SIZE)*100,
+                       (double)numberOfCells(j1Turn ? J1 : J2) / (BOARD_SIZE * BOARD_SIZE) * 100,
                        !j1Turn ? "J1" : "J2",
-                       (double)numberOfCells(j1Turn ? J2 : J1) / (BOARD_SIZE * BOARD_SIZE)*100);
+                       (double)numberOfCells(j1Turn ? J2 : J1) / (BOARD_SIZE * BOARD_SIZE) * 100);
             }
             else
             {

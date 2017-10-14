@@ -10,7 +10,7 @@
     (((tmp = c).type == 0) ? 'A' + tmp.value.color - 1 \
                            : PLAYER_SYMBOLS[tmp.value.id - 1])
 
-unsigned players_area[PLAYER_NUMBER] = {0, 0};
+unsigned players_area[PLAYER_NUMBER] = {1, 1};
 
 void add_points(Player_id player, int n)
 {
