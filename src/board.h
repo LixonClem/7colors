@@ -1,11 +1,41 @@
+#pragma once
+#include <stdbool.h>
 #include "parameters.h"
 #include "player.h"
 
-/** Retrieves the color of a given board cell */
-char get_cell(int x, int y);
+// definitions of types related to the board
 
-/** Changes the color of a given board cell */
-void set_cell(int x, int y, char color);
+typedef enum CellColor CellColor;
+enum CellColor
+{
+    c1=1,
+    c2,
+    c3,
+    c4,
+    c5,
+    c6,
+    c7
+};
+enum CellType
+{
+    tcolor,tplayer
+};
+
+union CellValues {
+    CellColor color; Player_id id;
+};
+
+typedef struct Cell Cell;
+struct Cell
+{
+    enum CellType type;
+    union CellValues value;
+};
+
+//------------------------- Functions
+
+/** Retrieves the color of a given board cell */
+Cell get_cell(int x, int y);
 
 /** Prints the current state of the board on screen
  *
@@ -23,9 +53,8 @@ void fill_board(void);
  *                                         the blocks corresponding with color
  *                                         and adjacents to player blocks 
  **/
-void modify(Player_id player, char color);
-
+void modify(Player_id player, CellColor color);
 
 bool there_is_a_winner(void);
 
-double area(Player_id player);
+unsigned numberOfCells(Player_id player);

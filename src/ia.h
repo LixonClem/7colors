@@ -14,10 +14,9 @@
 
 // */
 
-void createIA(Player_id player);
 
 /** Ask a move from the ia
  * given the player id
  * 
  **/
-char iaPlay(Player_id player);
+CellColor iaPlay(Player_id id);

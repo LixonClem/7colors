@@ -1,10 +1,16 @@
+#include "board.h"
+#include <stdbool.h>
 #include <stdio.h> /* printf */
 #include <stdlib.h>
-#include "board.h"
 
-#define random0_7 (int)(rand() % 7)
+#define RANDOM_COLOR 1 + (int)(rand() % 7)
+// caution next 2 define need a tmp value
+#define COMP_CJ(c, j) ((tmp = c).type == 1 && tmp.value.id == j)
+#define CELL_TO_CHAR(c)                                \
+    (((tmp = c).type == 0) ? 'A' + tmp.value.color - 1 \
+                           : PLAYER_SYMBOLS[tmp.value.id - 1])
 
-int players_area[PLAYER_NUMBER] = {0, 0};
+unsigned players_area[PLAYER_NUMBER] = {0, 0};
 
 void add_points(Player_id player, int n)
 {
@@ -14,41 +20,57 @@ void add_points(Player_id player, int n)
         players_area[1] += n;
 }
 
-char board[BOARD_SIZE * BOARD_SIZE] = {0}; // Filled with zeros
+/** Board representation in memory
+ * There is many diferents ways to represent the board in memory
+ * mainly because of the fixed 'word' size taken by the processor
+ * so for readability we will choose
+ *  -zero mean uninitialized, blank
+ *  -negative int for players starting at minus one like Player_id starting at one
+ *
+ *  -positive int for colors it's start at 1 to
+ **/
+static int board[BOARD_SIZE * BOARD_SIZE] = {0}; // Filled with zeros
 
-char get_cell(int x, int y)
+Cell get_cell(int x, int y)
 {
-    return board[y * BOARD_SIZE + x];
+    Cell c;
+    int tmp = board[y * BOARD_SIZE + x];
+    if (tmp > 0)
+    {
+        c.type = tcolor;
+        c.value.color = (CellColor)abs(tmp);
+    }
+    else
+    {
+        c.type = tplayer;
+        c.value.id = (Player_id)abs(tmp);
+    }
+    return c;
 }
 
-void set_cell(int x, int y, char color)
-{
-    board[y * BOARD_SIZE + x] = color;
-}
+static void set_cell(int x, int y, int v) { board[y * BOARD_SIZE + x] = v; }
 
 bool is_adjacent(int x, int y, Player_id player)
 {
-    return (x > 0 && get_cell(x - 1, y) == (char)player) ||
-           (x < BOARD_SIZE - 1 && get_cell(x + 1, y) == (char)player) ||
-           (y > 0 && get_cell(x, y - 1) == (char)player) ||
-           (y < BOARD_SIZE - 1 && get_cell(x, y + 1) == (char)player);
+    Cell tmp;
+    bool r = (x > 0 && COMP_CJ(get_cell(x - 1, y), player)) ||
+             (x < BOARD_SIZE - 1 && COMP_CJ(get_cell(x + 1, y), player)) ||
+             (y > 0 && COMP_CJ(get_cell(x, y - 1), player)) ||
+             (y < BOARD_SIZE - 1 && COMP_CJ(get_cell(x, y + 1), player));
+    return r;
 }
 
 void print_board(void)
 {
+    Cell tmp;
     for (int i = 0; i < BOARD_SIZE; i++)
     {
         for (int j = 0; j < BOARD_SIZE; j++)
         {
-            printf("%c", get_cell(i, j));
+            printf("%c", CELL_TO_CHAR(get_cell(i, j)));
         }
         printf("\n");
     }
-}
-
-char get_random_char(int qtt, int first)
-{
-    return 'A' + random0_7;
 }
 
 void fill_board(void)
@@ -57,29 +79,35 @@ void fill_board(void)
     {
         for (int j = 0; j < BOARD_SIZE; j++)
         {
-            set_cell(i, j, get_random_char(7, 'A'));
+            set_cell(i, j, RANDOM_COLOR);
         }
     }
-    set_cell(0, BOARD_SIZE - 1, J1);
-    set_cell(BOARD_SIZE - 1, 0, J2);
+    set_cell(0, BOARD_SIZE - 1, -J1);
+    set_cell(BOARD_SIZE - 1, 0, -J2);
 }
 
-void modify(Player_id player, char color)
+void modify(Player_id player, CellColor color)
 {
     bool changed;
     int how_many = 0;
     do
     {
-        changed = FALSE;
+        changed = false;
         for (int i = 0; i < BOARD_SIZE; i++)
         {
             for (int j = 0; j < BOARD_SIZE; j++)
             {
-                if (color == get_cell(i, j) && is_adjacent(i, j, player))
+                // better to save get_cell? if yes, in or out forloop?
+                // clang-format off
+                Cell zazaz = get_cell(i, j);
+                if (get_cell(i, j).type == 0 
+                && get_cell(i, j).value.color == color 
+                && is_adjacent(i, j, player))
+                // clang-format on
                 {
-                    set_cell(i, j, player);
+                    set_cell(i, j, -player);
                     how_many = how_many + 1;
-                    changed = TRUE;
+                    changed = true;
                 }
             }
         }
@@ -89,24 +117,17 @@ void modify(Player_id player, char color)
 
 bool there_is_a_winner(void)
 {
-    int last = 0;
+    unsigned last = 0;
     for (int i = 0; i < PLAYER_NUMBER; i++)
     {
         if (last < players_area[i])
             last = players_area[i];
     }
-    printf("j1 %lf\n", (double)players_area[0] / (BOARD_SIZE * BOARD_SIZE));
-    printf("j2 %lf\n", (double)players_area[1] / (BOARD_SIZE * BOARD_SIZE));
-    printf("** %d\n", (double)last > (double)(BOARD_SIZE * BOARD_SIZE) / PLAYER_NUMBER);
+    printf("j1 %lf\n", (double)players_area[J1 - 1] / (BOARD_SIZE * BOARD_SIZE));
+    printf("j2 %lf\n", (double)players_area[J2 - 1] / (BOARD_SIZE * BOARD_SIZE));
+    printf("** %d\n",
+           (double)last > (double)(BOARD_SIZE * BOARD_SIZE) / PLAYER_NUMBER);
     return (double)last > (double)(BOARD_SIZE * BOARD_SIZE) / PLAYER_NUMBER;
 }
 
-double area(Player_id player)
-{
-    int r = 0;
-    if (player == J1)
-        r = players_area[0];
-    else if (player == J1)
-        r = players_area[1];
-    return (double)r / (BOARD_SIZE * BOARD_SIZE);
-}
+unsigned numberOfCells(Player_id player) { return players_area[player - 1]; }

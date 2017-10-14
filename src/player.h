@@ -11,7 +11,8 @@ enum Player_type
 typedef enum Player_id Player_id;
 enum Player_id
 {
-    J1=(char)'^',J2=(char)'v'
+    J1 = 1,//Do not TOUCH or ajust all the fuction using it
+    J2
 };
 
 typedef struct Player Player;

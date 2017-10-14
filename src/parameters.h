@@ -1,9 +1,9 @@
+#pragma once
+#include <stdbool.h>
 /* We want a 30x30 board game by default */
-#define BOARD_SIZE 30
-
-#define bool int
-#define TRUE 1 
-#define FALSE 0
+#define BOARD_SIZE 3
 
 
 #define PLAYER_NUMBER 2
+
+#define PLAYER_SYMBOLS "^v"
