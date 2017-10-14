@@ -218,13 +218,6 @@ void artificial2(void) {
     char color;
     char *colors;
     avail_colo('^', avail);
-    printf("%d\n", avail[0]);
-    printf("%d\n", avail[1]);
-    printf("%d\n", avail[2]);
-    printf("%d\n", avail[3]);
-    printf("%d\n", avail[4]);
-    printf("%d\n", avail[5]);
-    printf("%d\n", avail[6]);
     noc = number_of_choice(avail);
     colors = malloc(noc * sizeof(char));
     for (int i = 0; i < 7; i++) {
