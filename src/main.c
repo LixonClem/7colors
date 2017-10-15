@@ -99,18 +99,20 @@ int main(int argc, char *argv[])
 
     bool j1Turn = true;
     bool game_is_running = true;
-    int turns_left = 30;
-    while (game_is_running && 0 < turns_left--)
+    int turns = 0;
+    while (game_is_running)
     {
-
+        turns++;
         if (play(j1Turn ? J1 : J2))
         {
             if (there_is_a_winner())
             {
                 //print_board();
                 game_is_running = false;
-                printf("%s win with %lf pourcent\n"
+                printf("you have took %i turns to find who's the best.\n"
+                    "%s win with %lf pourcent\n"
                        "%s only have %lf pourcent\n",
+                       turns,
                        j1Turn ? "J1" : "J2",
                        (double)numberOfCells(j1Turn ? J1 : J2) / (BOARD_SIZE * BOARD_SIZE) * 100,
                        !j1Turn ? "J1" : "J2",
