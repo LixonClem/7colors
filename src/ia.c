@@ -6,8 +6,7 @@
 #include "board.h"
 #define IA_GET_CELL(X, Y, B, SIZE) B[(Y) * (SIZE) + (X)]
 #define F(X, Y, B, SIZE, COLOR, PLAYER) \
-    (IA_GET_CELL(X, Y, B, SIZE) == COLOR \
-    || IA_GET_CELL(X, Y, B, SIZE) == -PLAYER)
+    (IA_GET_CELL(X, Y, B, SIZE) == COLOR || IA_GET_CELL(X, Y, B, SIZE) == -PLAYER)
 // struct Node
 // {
 //     void * data;
@@ -29,7 +28,7 @@ static CellColor randomPlay(Player_id player)
  **/
 static CellColor random2Play(Player_id player)
 {
-    bool colors[COLORS_NUMBER + 1] = {0};
+    bool colors[COLORS_NUMBER + 1] = {false};
     for (int i = 0; i < BOARD_SIZE; i++)
     {
         for (int j = 0; j < BOARD_SIZE; j++)
@@ -37,20 +36,22 @@ static CellColor random2Play(Player_id player)
             Cell c = get_cell(i, j);
             if (c.type == tcolor && is_adjacent(i, j, player))
             {
-                colors[c.value.color] == true;
+                colors[c.value.color] = true;
             }
         }
     }
-    CellColor res = 1;
-
+    CellColor t_for_random[COLORS_NUMBER] = {0};
+    int j = 0;
     for (int i = 1; i < COLORS_NUMBER + 1; i++)
     {
-        printf("%c:%i\n", 'A' + i - 1, colors[i]);
-        if (colors[i] > colors[res])
-            res = i;
+
+        if (colors[i])
+        {
+            t_for_random[j] = i;
+            j++;
+        }
     }
-    printf(">from random2: I want %c\n", 'A' + res - 1);
-    return res;
+    return t_for_random[(int)(rand() % j)];
 }
 
 /**
@@ -73,8 +74,6 @@ void general_table_print(int *t, size_t size) // TODO remove
  **/
 static CellColor gloutonPlay(Player_id player) //TODO bug j1 gauche
 {
-    static int gg = 0;                  //TODO rm
-    printf("id:%u %i\n", player, gg++); //TODO rm
     int adj[BOARD_SIZE * BOARD_SIZE];
 
     //set each cell of player to true in adj
@@ -104,18 +103,7 @@ static CellColor gloutonPlay(Player_id player) //TODO bug j1 gauche
         {
             for (int i = 0; i < BOARD_SIZE; i++)
             {
-                /*  #i,j
-                    #  a
-                    #a a a
-                    #  a
-                */
-                /*
-                printf("-----i:%i | j:%i\n", i, j);
-                printf("  %i\n", j > 0?IA_GET_CELL(i, j - 1, board, BOARD_SIZE):0);
-                printf("%i %i %i\n", i > 0?IA_GET_CELL(i - 1, j, board, BOARD_SIZE):0, IA_GET_CELL(i, j, board, BOARD_SIZE), i < BOARD_SIZE - 1?IA_GET_CELL(i + 1, j, board, BOARD_SIZE):0);
-                printf("  %i\n", j < BOARD_SIZE - 1?IA_GET_CELL(i, j + 1, board, BOARD_SIZE):0);
-                */
-                Cell c = get_cell(i,j);
+                Cell c = get_cell(i, j);
                 // clang-format off
                 if (IA_GET_CELL(i, j, adj, BOARD_SIZE) == 0 && c.type==tcolor
                 && ((i > 0 &&              F(i - 1, j, adj, BOARD_SIZE, c.value.color, player)) 
@@ -124,7 +112,6 @@ static CellColor gloutonPlay(Player_id player) //TODO bug j1 gauche
                  || (j < BOARD_SIZE - 1 && F(i, j + 1, adj, BOARD_SIZE, c.value.color, player))))
                 // clang-format on
                 {
-                    //printf("ggggggggggggggg");
                     colors[c.value.color]++;
                     adj[j * BOARD_SIZE + i] = c.value.color;
                     changed = true;
@@ -135,15 +122,14 @@ static CellColor gloutonPlay(Player_id player) //TODO bug j1 gauche
 
     CellColor res = 1;
 
-    for (int i = 1; i < COLORS_NUMBER + 1; i++) //TODO set i to 2
+    for (int i = 2; i < COLORS_NUMBER + 1; i++)
     {
-        printf("%c:%i\n", 'A' + i - 1, colors[i]);
         if (colors[i] > colors[res])
             res = i;
     }
-    printf(">from glouton: I want %c\n", 'A' + res - 1);
     return res;
 }
+
 typedef CellColor (*f_ptr)(Player_id);
 
 static f_ptr IaFunct[] = {&randomPlay, &random2Play, &gloutonPlay};
@@ -151,7 +137,6 @@ static f_ptr IaFunct[] = {&randomPlay, &random2Play, &gloutonPlay};
 CellColor iaPlay(Player_id id)
 {
     //shorter than switch !!!!!
-    printf("--%u--\n", id - 1);
     Player_type t = (Players_type)[id - 1];
     return (*(IaFunct[t - 1]))(id);
     // IaFunct:              randomPlay, random2Play, gloutonPlay

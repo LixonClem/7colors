@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        Players_type[J1 - 1] = GLOUTON;
+        Players_type[J1 - 1] = RANDOM2;
         Players_type[J2 - 1] = GLOUTON;
     }
 
