@@ -1,6 +1,5 @@
 #include <stdbool.h>
 #include <stdlib.h> /* rand, srand */
-#include <stdio.h>  /* printf */
 #include "ia.h"
 #include "parameters.h"
 #include "board.h"
@@ -52,21 +51,6 @@ static CellColor random2Play(Player_id player)
         }
     }
     return t_for_random[(int)(rand() % j)];
-}
-
-/**
- * 
- **/
-void general_table_print(int *t, size_t size) // TODO remove
-{
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-        {
-            printf("%i ", (int)t[j * size + i]);
-        }
-        printf("\n");
-    }
 }
 
 /**IA 2

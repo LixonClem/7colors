@@ -123,11 +123,7 @@ bool there_is_a_winner(void)
         if (last < players_area[i])
             last = players_area[i];
     }
-    printf("j1 %lf\n", (double)players_area[J1 - 1] / (BOARD_SIZE * BOARD_SIZE));
-    printf("j2 %lf\n", (double)players_area[J2 - 1] / (BOARD_SIZE * BOARD_SIZE));
-    printf("** %d\n",
-           (double)last > (double)(BOARD_SIZE * BOARD_SIZE) / PLAYER_NUMBER);
-    return (double)last > (double)(BOARD_SIZE * BOARD_SIZE) / PLAYER_NUMBER;
+    return (double)last >= (double)(BOARD_SIZE * BOARD_SIZE) / PLAYER_NUMBER;
 }
 
 unsigned numberOfCells(Player_id player) { return players_area[player - 1]; }

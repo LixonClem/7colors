@@ -8,6 +8,9 @@
 #include "board.h"
 #include "player.h"
 
+
+int tournoi_take_place=0;
+
 Player_type Players_type[PLAYER_NUMBER] = {0};
 
 Player get_player(Player_id i)
@@ -24,9 +27,12 @@ bool play(Player_id player) //false if wrong input
     if (Players_type[player - 1] != HUMAN)
     {
         CellColor ia_play = iaPlay(player);
-        printf("the ia J%i played %c\n", player, 'A'+ia_play-1);
         modify(player, ia_play);
-        print_board();
+        if(tournoi_take_place==0)
+        {
+            printf("the ia J%i played %c\n", player, 'A' + ia_play - 1);
+            print_board();
+        }
     }
     else
     {
@@ -70,13 +76,22 @@ bool play(Player_id player) //false if wrong input
 /** Program entry point */
 int main(int argc, char *argv[])
 {
+    char *player_array_ptr;
     srand(time(NULL));
-
-    if (argc == PLAYER_NUMBER + 1)
+    if (argc > 1 && strcmp(argv[1] ,"--tournoi")==0)
+    {
+        player_array_ptr = argv + 1;
+        tournoi_take_place = 1;
+    }
+    else
+    {
+        player_array_ptr = argv + 1;
+    }
+    if (argc == PLAYER_NUMBER + 1 + tournoi_take_place)
     {
         for (int i = 0; i < PLAYER_NUMBER; i++)
         {
-            Players_type[i] = (int)(*argv[i + 1] - '0');
+            Players_type[i] = (int)(*argv[i + 1 + tournoi_take_place] - '0');
         }
     }
     else
@@ -84,49 +99,75 @@ int main(int argc, char *argv[])
         Players_type[J1 - 1] = RANDOM2;
         Players_type[J2 - 1] = GLOUTON;
     }
-
-    printf("J1 set to %i\n"
-           "J2 set to %i\n",
-           Players_type[J1 - 1],
-           Players_type[J2 - 1]);
-
     fill_board();
-    printf("\n\nWelcome to the 7 wonders of the world of the 7 colors\n"
-           "*****************************************************\n\n"
-           "Current board state:\n");
+    if (!tournoi_take_place)
+    {
+        printf("J1 set to %i\n"
+               "J2 set to %i\n",
+               Players_type[J1 - 1],
+               Players_type[J2 - 1]);
 
-    print_board();
+        printf("\n\nWelcome to the 7 wonders of the world of the 7 colors\n"
+               "*****************************************************\n\n"
+               "Current board state:\n");
+        print_board();
+    }
 
-    bool j1Turn = true;
+    unsigned whosturn = 0;
     bool game_is_running = true;
-    int turns = 0;
+    int turns = 1;
     while (game_is_running)
     {
-        turns++;
-        if (play(j1Turn ? J1 : J2))
+        if (play(whosturn + 1))
         {
             if (there_is_a_winner())
             {
-                //print_board();
                 game_is_running = false;
-                printf("you have took %i turns to find who's the best.\n"
-                    "%s win with %lf pourcent\n"
-                       "%s only have %lf pourcent\n",
-                       turns,
-                       j1Turn ? "J1" : "J2",
-                       (double)numberOfCells(j1Turn ? J1 : J2) / (BOARD_SIZE * BOARD_SIZE) * 100,
-                       !j1Turn ? "J1" : "J2",
-                       (double)numberOfCells(j1Turn ? J2 : J1) / (BOARD_SIZE * BOARD_SIZE) * 100);
+                if (!tournoi_take_place)
+                {
+                    print_board();
+                    printf("you have took %i turns to find who's the best.\n", turns);
+                    printf("J%i win with %lf pourcent\n", whosturn + 1,
+                           (double)numberOfCells(whosturn + 1) / (BOARD_SIZE * BOARD_SIZE) * 100);
+                    for (int i = 1; i < PLAYER_NUMBER; i++)
+                    {
+                        printf("J%i only have %lf pourcent\n",
+                            ((whosturn+i) % PLAYER_NUMBER)+1,
+                            (double)numberOfCells(((whosturn+i) % PLAYER_NUMBER)+1) / (BOARD_SIZE * BOARD_SIZE) * 100);
+                    }
+                }
+                else
+                {
+                    printf("%i", whosturn+1);
+                }
             }
             else
             {
-                j1Turn = !j1Turn;
+                whosturn++;
+                if (whosturn == PLAYER_NUMBER)
+                {
+                    turns++;
+                    whosturn = 0;
+                }
             }
         }
         else
         {
-            if (true)
-                game_is_running = false;
+            bool not_valid = true;
+            char c;
+            while (not_valid)
+            {
+                printf("want to quit? [Y,n]");
+                if ((c = getchar()) == 'y' || c == 'Y')
+                {
+                    game_is_running = false;
+                    not_valid = false;
+                }
+                else if (c == 'n' || c == 'N')
+                {
+                    not_valid = false;
+                }
+            }
         }
     }
 
