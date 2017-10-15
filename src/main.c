@@ -23,7 +23,10 @@ bool play(Player_id player) //false if wrong input
     bool valid_input = true;
     if (Players_type[player - 1] != HUMAN)
     {
-        modify(player, iaPlay(player));
+        CellColor ia_play = iaPlay(player);
+        printf("the ia J%i played %c\n", player, 'A'+ia_play-1);
+        modify(player, ia_play);
+        print_board();
     }
     else
     {
@@ -73,21 +76,21 @@ int main(int argc, char *argv[])
     {
         for (int i = 0; i < PLAYER_NUMBER; i++)
         {
-            Players_type[i] = (int)(*argv[i+1]-'0');
+            Players_type[i] = (int)(*argv[i + 1] - '0');
         }
     }
     else
     {
-        Players_type[J1 - 1] = HUMAN;
+        Players_type[J1 - 1] = GLOUTON;
         Players_type[J2 - 1] = GLOUTON;
     }
 
     printf("J1 set to %i\n"
            "J2 set to %i\n",
            Players_type[J1 - 1],
-           Players_type[J2 - 1] );
+           Players_type[J2 - 1]);
 
-        fill_board();
+    fill_board();
     printf("\n\nWelcome to the 7 wonders of the world of the 7 colors\n"
            "*****************************************************\n\n"
            "Current board state:\n");
@@ -96,7 +99,7 @@ int main(int argc, char *argv[])
 
     bool j1Turn = true;
     bool game_is_running = true;
-    int turns_left = 1000;
+    int turns_left = 40;
     while (game_is_running && 0 < turns_left--)
     {
 
@@ -104,6 +107,7 @@ int main(int argc, char *argv[])
         {
             if (there_is_a_winner())
             {
+                //print_board();
                 game_is_running = false;
                 printf("%s win with %lf pourcent\n"
                        "%s only have %lf pourcent\n",

@@ -29,7 +29,7 @@ void add_points(Player_id player, int n)
  *
  *  -positive int for colors it's start at 1 to
  **/
-static int board[BOARD_SIZE * BOARD_SIZE] = {0}; // Filled with zeros
+int board[BOARD_SIZE * BOARD_SIZE] = {0}; // Filled with zeros TODO set to static
 
 Cell get_cell(int x, int y)
 {
@@ -67,7 +67,7 @@ void print_board(void)
     {
         for (int j = 0; j < BOARD_SIZE; j++)
         {
-            printf("%c", CELL_TO_CHAR(get_cell(i, j)));
+            printf("%c", CELL_TO_CHAR(get_cell(j, i)));
         }
         printf("\n");
     }
@@ -79,11 +79,11 @@ void fill_board(void)
     {
         for (int j = 0; j < BOARD_SIZE; j++)
         {
-            set_cell(i, j, RANDOM_COLOR);
+            set_cell(j, i, RANDOM_COLOR);
         }
     }
-    set_cell(0, BOARD_SIZE - 1, -J1);
-    set_cell(BOARD_SIZE - 1, 0, -J2);
+    set_cell(BOARD_SIZE - 1, 0, -J1);
+    set_cell(0, BOARD_SIZE - 1, -J2);
 }
 
 void modify(Player_id player, CellColor color)
