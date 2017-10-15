@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 
     bool j1Turn = true;
     bool game_is_running = true;
-    int turns_left = 40;
+    int turns_left = 30;
     while (game_is_running && 0 < turns_left--)
     {
 
