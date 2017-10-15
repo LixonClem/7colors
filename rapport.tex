@@ -1,0 +1,235 @@
+\documentclass[a4paper,11pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Global structure parameters
+\usepackage{fullpage}%
+
+\usepackage[francais]{babel}%
+
+\usepackage[utf8]{inputenc}%
+\usepackage[T1]{fontenc}%
+
+% Font selection: http://www.tug.dk/FontCatalogue/newpx/
+\usepackage{newpxtext}%
+\usepackage{newpxmath}%
+
+% Macro packages
+\usepackage{url}%
+\usepackage{graphicx}%
+\usepackage{listings}%
+
+% Parameters for listings
+\lstset{%
+  basicstyle=\footnotesize\sffamily,%
+  columns=fullflexible,%
+  frame=lb,%
+  frameround=fftf,%
+  language=caml,%
+}%
+
+% Fine tuning
+\setlength{\parskip}{0.2\baselineskip plus 0.2\baselineskip}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{Rapport du projet 7 couleurs}
+
+\author{Le Dilavrec Quentin et Clément Legrand Lixon}
+
+\date{15 octobre 2017}
+
+\maketitle
+
+\begin{abstract}
+Le jeu des 7 couleurs est un jeu vidéo de stratégie.
+Que nous avons réimplémenté en C. Ce rapport à pour but de répondre 
+clairement et de façon détaillé à chacunes des questions  que nous avons
+traitées présentes dans le sujet du projet.
+\end{abstract}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+Le jeu des 7 couleurs aussi applé Filler dans sa version anglophone est 
+un jeu video de strategie/puzzle créé par Dmitry Pashkov et pour la première 
+fois publié par la société Gamos pour MS-DOS en 1990! De par son gameplay 
+très simple , peu d'intéractions avec l'utilisateur tant du point de vue des commandes 
+joué par le(s) utilisateur(s) que par l'affichage facilement faisable dans le shell. 
+Le jeu est donc parfaitement adapté au programmeurs débutants en C. Le sujet est 
+pésenté sous forme de questions chacunes portant sur une partie particulière du jeu, 
+de l'affichage à l'interation avec l'utilisateur pour finir avec les ia.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{L'affichage}
+
+Dans cette première partie, nous nous sommes intéressés à l'affichage
+du monde des 7 couleurs, ainsi que sa mise à jour après un coup d'un des
+joueurs.
+
+\subsection{Initialisation du plateau de jeu}
+\emph{Reponse de Q1}
+
+Pour permettre l'initialisation du plateau de jeu, il faut choisir de manière
+aléatoire l'une des 7 couleurs disponibles, représentées par la suite par 
+une lettre (A, B, C, ..., G). Il suffit alors de tirer un entier aléatoire entre 1 et 7
+puis de le remplacer par la lettre correspondante dans le plateu de jeu. 
+
+Pour cela nous avions dans un premier temps  utilisé la fonction rand() 
+disponible en C, qui renvoie un entier, puis on calculait le reste de sa division 
+par 7 pour obtenir un entier entre 0 et 6. 
+
+Toutefois cette méthode posait un problème puisque nous obtenions le même plateau 
+de jeu à chaque nouvelle partie. Pour corriger ce problème nous définissons
+la variable RANDOM COLOR de la manière suivante : \#define RANDOM COLOR 1 + (int)(rand() \% 7).
+De cette manière c'est toujours une fonction rand() différente qui est utilisée et 
+l'entier est obtenu plus aléatoirement qu'avant, ce qui permet d'avoir un tableau
+de jeu différent à chaque partie.
+
+De plus il ne faut pas remplir les cases (29,0) et (0,29) qui contiennent 
+respectivement les symboles des joueurs 1 et 2. A l'issue de cette initialisation, 
+nous pouvons nous intéresser au déroulementdu jeu en lui-même.
+
+\subsection{Mise à jour du plateau}
+\emph{Reponse de Q2}
+
+Pour pouvoir (enfin) jouer au jeu, il faut que le plateau se mette à jour
+automatiquement une fois que l'un des joueurs a joué une lettre. Pour ce faire
+on parcourt le monde linéairement jusqu'à tomber sur une lettre à la fois choisie et
+voisine d'un symbole joueur. Dans ce cas on remplace la lettre trouvée par un symbole
+joueur et on recommence le parcours du monde du début, de cette façon on est sûr de 
+n'oublier aucune lettre lors de la mise à jour, et l'algorithme se termine bien 
+puisqu'il n'y a qu'un nombre fini de cases dans le plateau de jeu. Pour vérifier
+que cette fonction affiche le résultat voulu, il suffit de la tester sur un plateau, 
+de rentrer une lettre et de vérifier qu'il ne reste plus de lettres choisies adjacentes
+à un symbole joueur. Le pire cas est obtenu lorsque le plateau ne contient qu'une seule
+lettre et qu'elle est choisie par un joueur : le monde est alors parcouru autant de fois
+qu'il y a de cases comportant une lettre c'est-à-dire 898 fois (900 moins les deux cases
+joueurs initiales). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Les interactions avec l'utilisateur}
+
+A présent nous allons développer une implémentation Humain/Humain, pour 
+pouvoir jouer au jeu 7colors à deux.
+
+\subsection{De quoi jouer faire un duel entre utilisateurs}
+\emph{Reponse de Q4}
+
+Pour que deux joueurs humains puissent s'affronter dans ce jeu, il faut d'abord
+s'assurer que chaque joueur puisse jouer l'un après l'autre. Il suffit pour cela 
+de choisir de manière arbitraire quel joueur commencera la partie (il reçoit la
+valeur "true" puis une fois que son tour est terminé, il prend la valeur "false" et
+cette fois c'est au tour de l'autre joueur. Il suffit ensuite de demander au joueur
+une lettre à remplacer pour agrandir sa zone, puis de mettre à jour le plateau de jeu.
+Toutefois il peut aussi arriver que l'un des deux joueurs tape (de manière tout à 
+fait malencontreuse) un caractère différent de l'une des lettres attendues 
+(c'est-à-dire une lettre majuscule (ou minuscule) entre A et G), et dans ce cas on
+doit renvoyer un message d'erreur adapté pour que le joueur puisse corriger. 
+Cette implémentation est limitée car ?
+Comme aucune condition de victoire n'a été définie, la partie entre les deux joueurs
+est sans fin... Il est temps d'y remédier !  
+
+
+\subsection{Conditions de victoire}
+\emph{Reponse de Q5}
+
+Une première idée serait d'arrêter la partie seulement lorsque le monde est
+divisée en deux zones, puis de comparer le nombre de cases de chacun des joueurs.
+Toutefois, dès que l'un des deux joueurs possède au moins 50\% du plateau, l'autre joueur
+ne pourra plus gagner : c'est notre condition de victoire. 
+Ainsi la partie s'arrête dès que l'un des deux joueurs possède au moins 50\% du plateau.
+On calcule donc à chaque tour le nombre de cases possédées par chaque joueur, on en
+déduit le pourcentage d'occupation du plateau par chaque joueur (ce que l'on affiche
+à chaque tour), et on peut alors savoir si la condition de victoire est réalisée pour
+l'un des deux joueurs.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Les intelligences artificielles aléatoires}
+
+C'est bien de pouvoir jouer à deux, mais on n'a pas toujours d'amis sous la
+main, et pour pallier à ce problème nous allons nous intéresser à présent 
+à l'implémentation de certaines Intelligences artificielles.
+
+\subsection{Jouer totalement aléatoirement}
+
+La première IA à programmer doit choisir aléatoirement une couleur parmi 
+les 7 du jeu, lorsque c'est son tour. Pour ce faire il suffit de reprendre 
+l'implémentation pour un joueur humain, sauf qu'au lieu de rentrer une couleur
+soi-même, elle est choisie de manière aléatoire (comme quand on rempli le tableau
+pour la première fois (cf Question 1)). Le plateau est ensuite mis à jour 
+et affiché. On demande également à ce que la couleur choisie soit affichée.
+On peut observer, après plusieurs parties, que cette IA est particulièrement 
+inefficace, on va donc s'intéresser à une IA aléatoire plus efficace.
+
+
+\subsection{Jouer aléatoirement plus intelligemment}
+\emph{Reponse de Q7}
+
+Cette IA, a pour objectif d'être plus efficace que l'IA précédente. On va donc
+s'intéresser cette à fois une IA qui choisi une couleur aléatoirment mais 
+seulement parmi les couleurs qui peuvent agrandir sa zone. 
+
+Pour connaître les couleurs adjacentes à l'IA, on initialise un tableau de
+booléens B avec des "false", puis on parcourt le plateau jusqu'à tomber sur une lettre qui possède 
+un voisin correspondant au symbole de l'IA, on transforme ensuite la lettre 
+en un chiffre n puis le n-ième élément de B prend la valeur "true", puis on continue
+le parcours du plateau. A la fin on obtient un tableau B qui permet de connaître
+les couleurs adjacentes à l'IA. Il suffit enfin de choisir un entier aléatoire entre 
+0 et 6 qui renvoie vers une valeur "true" de B, puis de transformer cet entier
+en sa couleur associée. On peut alors mettre à jour le plateau de jeu, et afficher la
+couleur choisie.
+
+Cette IA est nettement plus efficace que la précédente mais peut-on faire mieux ?
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{L' intelligence artificielle gloutonne}
+
+La partie précédente nous a permis de développer des intelligences artificielles
+basées sur l'aléatoire, mais l'aléatoire a souvent des limites. Une idée naïve pour
+qu'une IA gagne serait qu'à chaque tour elle essaie de récupérer le maximum de cases
+autour d'elle. L'objectif de cette partie est donc d'implémenter cette IA, qualifiée 
+de gloutonne, puis de la comparer à l'IA aléatoire implémentée précédemment.
+
+
+\subsection{Maximisation du gain en cases immédiate}
+\emph{Reponse de Q8}
+
+Pour implémenter cette nouvelle IA, on construit une copie vierge du plateau de jeu,
+ainsi qu'un tableau d'entiers T, dont chaque case contiendra le nombre de cases que l'IA peut
+avoir en jouant la lettre associée. 
+
+On commence par parcourir le plateau de jeu, lorsqu'on tombe sur une lettre voisine
+d'un symbole joueur, ou voisine de la même lettre dans le plateau copie, on place cette
+lettre dans le plateau copie à la même place que dans le vrai plateau, on incrémente
+la i-ème case de T de 1 (avec i le nombre associé à la lettre trouvée) et on 
+recommence le parcours du plateau du début. A la fin, T contient le nombre de cases
+que l'IA pourra récupérer en jouant une lettre, il suffit alors de récupérer l'indice
+du maximum de T, puis l'IA jouera la couleur associée à cet indice. 
+
+Nous obtenons ainsi une IA qui cherche à maximiser son nombre de cases à chaque tour,
+essayons maintenant de faire jouer notre IA aléatoire améliorée et cette IA, pour
+savoir laquelle est la meilleure.
+
+\subsection{Aléatoire contre Glouton}
+\emph{Reponse de Q9}
+
+
+
+\subsection{Championnat}
+\emph{Reponse de Q10}
+
+aaa
+
+\section{Conclusion}
+
+aaaaaaaaaaaaaaaaaaa
+
+\end{document}
