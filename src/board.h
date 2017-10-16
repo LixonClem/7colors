@@ -3,6 +3,8 @@
 #include "parameters.h"
 #include "player.h"
 
+#define RANDOM_COLOR (1 + (int)(rand() % COLORS_NUMBER))
+
 // definitions of types related to the board
 
 typedef enum CellColor CellColor;

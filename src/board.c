@@ -3,7 +3,6 @@
 #include <stdio.h> /* printf */
 #include <stdlib.h>
 
-#define RANDOM_COLOR 1 + (int)(rand() % 7)
 // caution next 2 define need a tmp value
 #define COMP_CJ(c, j) ((tmp = c).type == 1 && tmp.value.id == j)
 #define CELL_TO_CHAR(c)                                \

@@ -19,7 +19,7 @@ extern int board[BOARD_SIZE * BOARD_SIZE];
  **/
 static CellColor randomPlay(Player_id player)
 {
-    return 1 + (int)(rand() % 7);
+    return RANDOM_COLOR;
 }
 
 /**IA 2

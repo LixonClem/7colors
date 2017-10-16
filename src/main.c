@@ -113,12 +113,12 @@ int main(int argc, char *argv[])
         print_board();
     }
 
-    unsigned whosturn = 0;
+    unsigned whosturn = J1;
     bool game_is_running = true;
     int turns = 1;
     while (game_is_running)
     {
-        if (play(whosturn + 1))
+        if (play(whosturn))
         {
             if (there_is_a_winner())
             {
@@ -127,8 +127,8 @@ int main(int argc, char *argv[])
                 {
                     print_board();
                     printf("you have took %i turns to find who's the best.\n", turns);
-                    printf("J%i win with %lf pourcent\n", whosturn + 1,
-                           (double)numberOfCells(whosturn + 1) / (BOARD_SIZE * BOARD_SIZE) * 100);
+                    printf("J%i win with %lf pourcent\n", whosturn,
+                           (double)numberOfCells(whosturn) / (BOARD_SIZE * BOARD_SIZE) * 100);
                     for (int i = 1; i < PLAYER_NUMBER; i++)
                     {
                         printf("J%i only have %lf pourcent\n",
@@ -138,16 +138,16 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    printf("%i", whosturn+1);
+                    printf("%i", whosturn);
                 }
             }
             else
             {
                 whosturn++;
-                if (whosturn == PLAYER_NUMBER)
+                if (whosturn-1 == PLAYER_NUMBER)
                 {
                     turns++;
-                    whosturn = 0;
+                    whosturn = J1;
                 }
             }
         }
