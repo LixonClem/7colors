@@ -146,6 +146,22 @@ Le pire cas est obtenu lorsque le joueur se trouve dans la cellule parcouru en d
 \caption{Evolution du plateau dans le pire cas avec modify}
 \end{figure}
 
+\subsection{Amélioration du parcours du monde}
+\emph{Réponse Q3 bonus}
+
+La méthode de mise à jour précédente est particulièrement inefficace dans son
+pire cas, et on peut l'améliorer de la manière suivante : on parcourt le monde
+jusqu'à trouver une lettre choisie voisine d'un symbole joueur, on place les coordonnées de
+cette lettre dans une pile. On garde en mémoire ces coordonnées, puis on dépile et
+on regarde si cette lettre est entourée de lettres semblables (dans le sens horaire 
+en partant du nord par exemple), on empile les coordonnées des lettres voisines semblables
+on remplace la lettre sur laquelle on était par un symbole joueur,
+tant que la pile n'est pas vide on procède de la même façon, et dès qu'elle est vide
+on retourne à la première case qui s'est empilée, puis on continue le parcours 
+du plateau, en faisant la même chose dès qu'on tombe sur une nouvelle lettre choisie
+qui est voisine d'un symbole joueur. De cette façon on ne parcourt plus que 2 fois
+seulement le monde dans le pire cas.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -248,11 +264,15 @@ Pour ne pas désavantager une IA par rapport au l'autre, il faut qu'il y ait une
 \subsection{Championnat}
 \emph{Reponse de Q10}
 
-En faisant en championnat de 100 parties on remarque que c'est toujours Glouton qui gagne. En effet les probabilité de victoire de l'IA aléatoire est d'environ ${(1/6)}^{40}$ (en effet on remarque qu'il faut environ 40 tours à deux gloutons pour finir une partie et on aura au maximum un choix entre 6 couleurs, d'où le résultat).
+En faisant en championnat de 100 parties on remarque que c'est toujours Glouton qui gagne. Ce qui est peut surprenant en fait puisque l'IA aléatoire n'a pas vraiment de stratégie gagnante. En effet les probabilité de victoire de l'IA aléatoire est d'environ ${(1/6)}^{40}$ (en effet on remarque qu'il faut environ 40 tours à deux gloutons pour finir une partie et on aura au maximum un choix entre 6 couleurs, d'où le résultat).
 
 \section{Conclusion}
 
-C'est un projet sympa et assez bien adapté aux débutants en C mais plus de code pour le squelette aurais peut être permis de s'intéréser plus rapidement à des points intéréssants du projet (clusterisation des elements connexes et arbre des choix possibles) et cela nous aurait aussi permis de recevoir un peu des bonnes pratiques.
+A travers ce projet nous avons pu implémenter le jeu 7colors et diverses IA
+pour jouer avec nous. Ca n'a pas toujours été facile d'implémenter de manière
+efficace les IA, mais le tout était divertissant. 
+Finalement c'était un projet sympa et assez bien adapté aux débutants en C mais plus de code pour le squelette aurais peut être permis de s'intéréser plus rapidement à des points intéréssants du projet (clusterisation des éléments connexes et arbre des choix possibles) et cela nous aurait aussi permis de recevoir un peu des bonnes pratiques.
+
 
 
 \end{document}
