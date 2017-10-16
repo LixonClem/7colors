@@ -40,22 +40,22 @@
 
 \begin{abstract}
 Le jeu des 7 couleurs est un jeu vidéo de stratégie.
-Que nous avons réimplémenté en C. Ce rapport a pour but de répondre 
-clairement et de façon détaillée à chacune des questions  que nous avons
+Que nous avons réimplémenté en C. Ce rapport à pour but de répondre 
+clairement et de façon détaillé à chacunes des questions  que nous avons
 traitées présentes dans le sujet du projet.
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Introduction}
-Le jeu des 7 couleurs aussi appelé Filler dans sa version anglophone est 
+Le jeu des 7 couleurs aussi applé Filler dans sa version anglophone est 
 un jeu video de strategie/puzzle créé par Dmitry Pashkov et pour la première 
 fois publié par la société Gamos pour MS-DOS en 1990! De par son gameplay 
 très simple , peu d'intéractions avec l'utilisateur tant du point de vue des commandes 
 joué par le(s) utilisateur(s) que par l'affichage facilement faisable dans le shell. 
-Le jeu est donc parfaitement adapté aux programmeurs débutants en C. Le sujet est 
-pésenté sous forme de questions chacune portant sur une partie particulière du jeu, 
-de l'affichage à l'interation avec l'utilisateur pour finir avec les IA.
+Le jeu est donc parfaitement adapté au programmeurs débutants en C. Le sujet est 
+pésenté sous forme de questions chacunes portant sur une partie particulière du jeu, 
+de l'affichage à l'interation avec l'utilisateur pour finir avec les ia.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -85,18 +85,18 @@ Toutefois pour plus de lisibilié et la modularité on utilise
 ...
 \end{lstlisting}
 
-Puis on parcourt le tableau avec deux boucles "for" imbriquées et on attribue pour chaque cellule une valeur aléatoire avec RANDOM\_COLOR
+Puis on parcours le tableau avec deux boucles for imbriqué et on attribut pour chaques cellules une valeur aléatoire avec RANDOM\_COLOR
 
-Ensuite on rempli les cases (29,0) et (0,29) pour qu'elles contiennent respectivement les symboles des joueurs 1 et 2.
+Ensuite on rempli les cases (29,0) et (0,29) pour qu'ils contiennent respectivement les symboles des joueurs 1 et 2.
 
-A l'issue de cette initialisation, nous pouvons nous intéresser au déroulement du jeu en lui-même.
+A l'issue de cette initialisation, nous pouvons nous intéresser au déroulementdu jeu en lui-même.
 
 \subsection{Mise à jour du plateau}
 \emph{Reponse de Q2}
 
 Pour pouvoir (enfin) jouer au jeu, il faut que le plateau se mette à jour automatiquement une fois que l'un des joueurs a joué une lettre. Pour ce faire on parcourt le monde linéairement jusqu'à tomber sur une lettre à la fois choisie et voisine d'un symbole joueur. Dans ce cas on remplace la lettre trouvée par un symbole joueur et on recommence le parcours du monde du début, de cette façon on est sûr de n'oublier aucune lettre lors de la mise à jour, et l'algorithme se termine bien puisqu'il n'y a qu'un nombre fini de cases dans le plateau de jeu. Pour vérifier que cette fonction affiche le résultat voulu, il suffit de la tester sur un plateau, de rentrer une lettre et de vérifier qu'il ne reste plus de lettres choisies adjacentes à un symbole joueur. 
 
-Le pire cas est obtenu lorsque le joueur se trouve dans la cellule parcouru en dernier et que le plateau ne contient qu'une seule lettre et qu'elle est choisie par un joueur. On peut illustrer ce cas avec le schéma suivant, la première image correspond à la situation initiale, chacune des images suivantes montre le tableau à la fin de la double boucle "for", ce qui correspond à l'intégration de tous les voisins adjacents qu'il est possible d'avoir.
+Le pire cas est obtenu lorsque le joueur se trouve dans la cellule parcouru en dernier et que le plateau ne contient qu'une seule lettre et qu'elle est choisie par un joueur.
 
 \begin{figure}[!h]
 \begin{center}
@@ -157,7 +157,7 @@ pouvoir jouer au jeu 7colors à deux.
 \subsection{De quoi jouer faire un duel entre utilisateurs}
 \emph{Reponse de Q4}
 
-Pour que deux joueurs humains puissent s'affronter dans ce jeu, il faut d'abord s'assurer que chaque joueur puisse jouer l'un après l'autre. Il suffit pour cela  de choisir de manière arbitraire quel joueur commencera la partie (ici J1), puis on incrémente notre variable de un à chaque fois qu'un joueur à joué (on repasse à J1 quand on dépasse le nombre de joueurs). Il suffit ensuite de demander au joueur une lettre à remplacer pour agrandir sa zone, puis de mettre à jour le plateau de jeu.
+Pour que deux joueurs humains puissent s'affronter dans ce jeu, il faut d'abord s'assurer que chaque joueur puisse jouer l'un après l'autre. Il suffit pour cela  de choisir de manière arbitraire quel joueur commencera la partie (ici J1), puis on incrémente notre variable de un à chaque fois que un joueur à joué (on repasse à J1 quand on dépasse le nombre de joueurs). Il suffit ensuite de demander au joueur une lettre à remplacer pour agrandir sa zone, puis de mettre à jour le plateau de jeu.
 
 Toutefois il peut aussi arriver que l'un des deux joueurs tape (de manière tout à fait malencontreuse) un caractère différent de l'une des lettres attendues  (c'est-à-dire une lettre majuscule (ou minuscule) entre A et G), et dans ce cas on doit renvoyer un message d'erreur adapté pour que le joueur puisse corriger.
 
@@ -172,7 +172,7 @@ divisée en deux zones, puis de comparer le nombre de cases de chacun des joueur
 Toutefois, dès que l'un des deux joueurs possède au moins 50\% du plateau, l'autre joueur
 ne pourra plus gagner : c'est notre condition de victoire. 
 Ainsi la partie s'arrête dès que l'un des deux joueurs possède au moins 50\% du plateau.
-On verifie donc à chaque tour que le pourcentage de cases possédées par chaque joueur ne dépasse pas $BOARD\_SIZE^2/PLAYERS\_NUMBER$ . Bien sûr pour ne pas faire le parcours de tout le plateau à chaque tours on stocke le nombre de cellulles possédées par chaque joueur (c'est modify qui le maintient à jour).
+On verifie donc à chaque tour le nombre de cases possédées par chaque joueur ne dépasse pas $BOARD\_SIZE^2/PLAYERS\_NUMBER$. Bien sûr pour ne pas faire le parcour de tout le plateau à chaques tours on stock le nombre de cellulles possédé par chaques joueurs (c'est modify qui le maintient à jour).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -224,7 +224,7 @@ de gloutonne, puis de la comparer à l'IA aléatoire implémentée précédemmen
 \subsection{Maximisation du gain en cases immédiate}
 \emph{Reponse de Q8}
 
-Pour implémenter cette nouvelle IA, on construit une copie vierge du plateau de jeu (où l'on ajoute les cases du joueur courant),
+Pour implémenter cette nouvelle IA, on construit une copie vierge du plateau de jeu (où l'on ajoute les case du joueur courant),
 ainsi qu'un tableau d'entiers T, dont chaque case contiendra le nombre de cases que l'IA peut
 avoir en jouant la lettre associée. 
 
@@ -243,16 +243,15 @@ savoir laquelle est la meilleure.
 \subsection{Aléatoire contre Glouton}
 \emph{Reponse de Q9}
 
-Pour ne pas désavantager une IA par rapport au l'autre, il faut qu'il y ait une répartition homogène des lettres dans le plateau (on ne doit pas avoir une lettre surreprésentée car sinon Glouton pourrait facilement être avantagée en tombant sur ce groupe de lettres, alors que pour avantager l'IA aléatoire, il faudrait qu'à chaque tour cette IA n'ait qu'un seul choix possible). Ainsi pour des plateaux totalement aléatoires de 30X30 auncune des deux IA ne peut réellement être avantagées. L'IA aléatoire améliorée ne gagne jamais contre le glouton, ce qui ne fait pas des valeurs très intéressantes à étudier.
+Pour des plateaux totalement aléatoires de 30X30. L'ia aléatoire amélioré ne gagne jamais contre le glouton. Ce qui ne fait pas des valeurs très intéressantes à étudier.
 
 \subsection{Championnat}
 \emph{Reponse de Q10}
 
-En faisant en championnat de 100 parties on remarque que c'est toujours Glouton qui gagne. En effet les probabilité de victoire de l'IA aléatoire est d'environ ${(1/6)}^{40}$ (en effet on remarque qu'il faut environ 40 tours à deux gloutons pour finir une partie et on aura au maximum un choix entre 6 couleurs, d'où le résultat).
+Idem que précédement sur 100 partie glouton gagne toujours. En effet les probabilité de victoire de l'ia aléatoire environs ${(1/6)}^{40}$ (on remarque qu'il faut environ 40 tours à deux glouton pour finir une partie et on aura au maximum un choix entre 6 couleurs) donc
 
 \section{Conclusion}
 
-C'est un projet sympa et assez bien adapté aux débutants en C mais plus de code pour le squelette aurais peut être permis de s'intéréser plus rapidement à des points intéréssants du projet (clusterisation des elements connexes et arbre des choix possibles) et cela nous aurait aussi permis de recevoir un peu des bonnes pratiques.
-
+C'est un projet simpa et assez bien adapté aux débutants en C mais plus de code pour le squelette aurais peut être permis de s'intéréser plus rapidement à des points intéréssants du projet (clusterisation des elements connexes et arbre des choix possibles) et cela nous aurais aussi permis de recevoir un peu des bonnes pratiques.
 
 \end{document}
