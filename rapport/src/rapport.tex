@@ -224,7 +224,7 @@ de gloutonne, puis de la comparer à l'IA aléatoire implémentée précédemmen
 \subsection{Maximisation du gain en cases immédiate}
 \emph{Reponse de Q8}
 
-Pour implémenter cette nouvelle IA, on construit une copie vierge du plateau de jeu,
+Pour implémenter cette nouvelle IA, on construit une copie vierge du plateau de jeu (où l'on ajoute les case du joueur courant),
 ainsi qu'un tableau d'entiers T, dont chaque case contiendra le nombre de cases que l'IA peut
 avoir en jouant la lettre associée. 
 
@@ -232,7 +232,7 @@ On commence par parcourir le plateau de jeu, lorsqu'on tombe sur une lettre vois
 d'un symbole joueur, ou voisine de la même lettre dans le plateau copie, on place cette
 lettre dans le plateau copie à la même place que dans le vrai plateau, on incrémente
 la i-ème case de T de 1 (avec i le nombre associé à la lettre trouvée) et on 
-recommence le parcours du plateau du début. A la fin, T contient le nombre de cases
+recommence le parcours du plateau du début tant que l'on a modifié une case durant cette boucle. A la fin, T contient le nombre de cases
 que l'IA pourra récupérer en jouant une lettre, il suffit alors de récupérer l'indice
 du maximum de T, puis l'IA jouera la couleur associée à cet indice. 
 
@@ -243,15 +243,15 @@ savoir laquelle est la meilleure.
 \subsection{Aléatoire contre Glouton}
 \emph{Reponse de Q9}
 
-
+Pour des plateaux totalement aléatoires de 30X30. L'ia aléatoire amélioré ne gagne jamais contre le glouton. Ce qui ne fait pas des valeurs très intéressantes à étudier.
 
 \subsection{Championnat}
 \emph{Reponse de Q10}
 
-aaa
+Idem que précédement sur 100 partie glouton gagne toujours. En effet les probabilité de victoire de l'ia aléatoire environs ${(1/6)}^{40}$ (on remarque qu'il faut environ 40 tours à deux glouton pour finir une partie et on aura au maximum un choix entre 6 couleurs) donc
 
 \section{Conclusion}
 
-aaaaaaaaaaaaaaaaaaa
+C'est un projet simpa et assez bien adapté aux débutants en C mais plus de code pour le squelette aurais peut être permis de s'intéréser plus rapidement à des points intéréssants du projet (clusterisation des elements connexes et arbre des choix possibles) et cela nous aurais aussi permis de recevoir un peu des bonnes pratiques.
 
 \end{document}
